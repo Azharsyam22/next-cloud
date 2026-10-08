@@ -73,5 +73,8 @@
         <!-- Livewire Trash Explorer -->
         <livewire:trash-explorer />
     </main>
+
+    <!-- Mobile Bottom Navigation (UIUX_BRIEF §8) -->
+    <x-mobile-nav />
 </body>
 </html>

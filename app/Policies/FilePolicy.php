@@ -12,7 +12,7 @@ class FilePolicy
      */
     public function view(User $user, File $file): bool
     {
-        if ($user->hasRole('super-admin')) {
+        if ($user->hasRole('super-admin') || $user->hasRole('admin-kampus')) {
             return true;
         }
 
@@ -24,7 +24,7 @@ class FilePolicy
      */
     public function download(User $user, File $file): bool
     {
-        if ($user->hasRole('super-admin')) {
+        if ($user->hasRole('super-admin') || $user->hasRole('admin-kampus')) {
             return true;
         }
 

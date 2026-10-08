@@ -14,12 +14,14 @@ Route::get('/user', function (Request $request) {
 
 // API Version 1
 Route::prefix('v1')->group(function () {
-    // Rute Publik Share API (Tanpa Autentikasi)
-    Route::get('public/shares/{token}', [ShareController::class, 'publicShow'])->name('api.public.shares.show');
-    Route::get('public/shares/{token}/download', [ShareController::class, 'publicDownload'])->name('api.public.shares.download');
+    // Rute Publik Share API (Tanpa Autentikasi dengan Rate Limiting)
+    Route::middleware('throttle:60,1')->group(function () {
+        Route::get('public/shares/{token}', [ShareController::class, 'publicShow'])->name('api.public.shares.show');
+        Route::get('public/shares/{token}/download', [ShareController::class, 'publicDownload'])->name('api.public.shares.download');
+    });
 
-    // Rute Terautentikasi Sanctum
-    Route::middleware('auth:sanctum')->group(function () {
+    // Rute Terautentikasi Sanctum dengan Rate Limiting
+    Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         // Folders API
         Route::get('folders/{folder}/download', [FolderController::class, 'download'])->name('api.folders.download');
         Route::post('folders/{folder}/move', [FolderController::class, 'move'])->name('folders.move');

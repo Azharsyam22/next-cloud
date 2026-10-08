@@ -1,0 +1,12 @@
+# ==============================================================================
+# CloudCampus Storage — Cron Schedule Configuration
+# ==============================================================================
+
+# 1. Laravel Task Scheduler (Membersihkan trash expired, zip sementara, dll)
+* * * * * cd /var/www/cloudcampus && php artisan schedule:run >> /dev/null 2>&1
+
+# 2. Pencadangan Harian Database & Storage (Setiap jam 02:00 pagi)
+0 2 * * * /bin/bash /var/www/cloudcampus/deploy/scripts/backup.sh >> /var/log/cloudcampus_backup.log 2>&1
+
+# 3. Pembaruan Otomatis Sertifikat SSL Certbot (Setiap 12 jam)
+0 */12 * * * certbot renew -q

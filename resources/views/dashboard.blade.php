@@ -147,5 +147,8 @@
         <!-- Livewire File Explorer -->
         <livewire:file-explorer />
     </main>
+
+    <!-- Mobile Bottom Navigation (UIUX_BRIEF §8) -->
+    <x-mobile-nav />
 </body>
 </html>

@@ -8,6 +8,7 @@ use App\Http\Requests\File\UpdateFileRequest;
 use App\Http\Requests\File\UploadFileRequest;
 use App\Http\Resources\FileResource;
 use App\Models\File;
+use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
@@ -24,7 +25,7 @@ class FileController extends Controller
     ) {}
 
     /**
-     * Mengambil daftar berkas milik pengguna aktif.
+     * Mengambil daftar berkas milik pengguna aktif atau pengguna tertentu jika dipanggil oleh admin/sistem akademik.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -32,7 +33,23 @@ class FileController extends Controller
         $folderId = $folderId !== null ? (int) $folderId : null;
         $search = $request->query('search');
 
-        $query = File::where('user_id', $request->user()->id)
+        $targetUserId = $request->user()->id;
+
+        // Dukungan untuk Sistem Akademik / Admin melihat file atas nama user tertentu
+        if ($request->filled('external_id') || $request->filled('user_id')) {
+            if ($request->user()->hasRole('super-admin') || $request->user()->hasRole('admin-kampus')) {
+                if ($request->filled('external_id')) {
+                    $targetUser = User::where('external_id', (string) $request->query('external_id'))->first();
+                    $targetUserId = $targetUser ? $targetUser->id : 0;
+                } else {
+                    $targetUserId = (int) $request->query('user_id');
+                }
+            } else {
+                abort(403, 'Anda tidak memiliki hak akses untuk melihat berkas pengguna lain.');
+            }
+        }
+
+        $query = File::where('user_id', $targetUserId)
             ->where('folder_id', $folderId);
 
         if (! empty($search)) {
@@ -45,15 +62,53 @@ class FileController extends Controller
     }
 
     /**
-     * Mengunggah berkas baru.
+     * Mengunggah berkas baru (mendukung upload atas nama user/mahasiswa oleh Sistem Akademik).
      */
     public function store(UploadFileRequest $request): JsonResponse
     {
         $folderId = $request->input('folder_id');
         $folderId = $folderId !== null ? (int) $folderId : null;
 
+        $targetUser = $request->user();
+
+        // Dukungan integrasi Sistem Akademik: upload berkas atas nama user tertentu (NIM/external_id atau user_id)
+        if ($request->filled('external_id') || $request->filled('user_id')) {
+            if ($request->user()->hasRole('super-admin') || $request->user()->hasRole('admin-kampus')) {
+                if ($request->filled('external_id')) {
+                    $extId = (string) $request->input('external_id');
+                    $targetUser = User::where('external_id', $extId)->first();
+
+                    if (! $targetUser) {
+                        if ($request->filled('user_email')) {
+                            // Auto-provision user akademik jika belum ada
+                            $targetUser = User::create([
+                                'external_id' => $extId,
+                                'name' => $request->input('user_name', 'Mahasiswa '.$extId),
+                                'email' => $request->input('user_email'),
+                                'account_type' => 'academic',
+                                'quota_bytes' => (int) config('cloudcampus.default_quota_bytes', 5368709120),
+                                'used_bytes' => 0,
+                                'email_verified_at' => now(),
+                            ]);
+                            $targetUser->assignRole('user');
+                        } else {
+                            return response()->json([
+                                'message' => 'Pengguna akademik dengan external_id "'.$extId.'" tidak ditemukan.',
+                            ], 404);
+                        }
+                    }
+                } else {
+                    $targetUser = User::findOrFail((int) $request->input('user_id'));
+                }
+            } else {
+                return response()->json([
+                    'message' => 'Anda tidak memiliki hak akses untuk mengunggah berkas atas nama pengguna lain.',
+                ], 403);
+            }
+        }
+
         $file = $this->fileService->upload(
-            $request->user(),
+            $targetUser,
             $request->file('file'),
             $folderId
         );

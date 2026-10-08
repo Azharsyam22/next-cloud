@@ -1,0 +1,687 @@
+{
+  "info": {
+    "_postman_id": "c7a8e0f9-3d21-4f1b-9a84-cloudcampus-api",
+    "name": "CloudCampus Storage API (v1)",
+    "description": "Koleksi Postman untuk endpoint REST API CloudCampus Storage v1, termasuk integrasi Sistem Akademik dan autentikasi Laravel Sanctum.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_SANCTUM_BEARER_TOKEN",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Autentikasi & Akun",
+      "item": [
+        {
+          "name": "Get Authenticated User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://127.0.0.1:8000/api/user",
+              "protocol": "http",
+              "host": ["127", "0", "0", "1"],
+              "port": "8000",
+              "path": ["api", "user"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Folders",
+      "item": [
+        {
+          "name": "List Folders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/folders?parent_id=",
+              "host": ["{{base_url}}"],
+              "path": ["folders"],
+              "query": [
+                {
+                  "key": "parent_id",
+                  "value": "",
+                  "description": "Kosongkan untuk root folder atau isi ID folder induk"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Folder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tugas Kuliah Web 2026\",\n  \"parent_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/folders",
+              "host": ["{{base_url}}"],
+              "path": ["folders"]
+            }
+          }
+        },
+        {
+          "name": "Get Folder Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/folders/1",
+              "host": ["{{base_url}}"],
+              "path": ["folders", "1"]
+            }
+          }
+        },
+        {
+          "name": "Rename Folder",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tugas Kuliah Web 2026 - Revisi\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/folders/1",
+              "host": ["{{base_url}}"],
+              "path": ["folders", "1"]
+            }
+          }
+        },
+        {
+          "name": "Move Folder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"parent_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/folders/1/move",
+              "host": ["{{base_url}}"],
+              "path": ["folders", "1", "move"]
+            }
+          }
+        },
+        {
+          "name": "Download Folder as ZIP",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/folders/1/download",
+              "host": ["{{base_url}}"],
+              "path": ["folders", "1", "download"]
+            }
+          }
+        },
+        {
+          "name": "Delete Folder",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/folders/1",
+              "host": ["{{base_url}}"],
+              "path": ["folders", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Files",
+      "item": [
+        {
+          "name": "List Files",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/files?folder_id=&search=",
+              "host": ["{{base_url}}"],
+              "path": ["files"],
+              "query": [
+                {
+                  "key": "folder_id",
+                  "value": "",
+                  "description": "Filter ID folder (kosong untuk root)"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Pencarian nama berkas"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload File (User Mandiri)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "folder_id",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/files",
+              "host": ["{{base_url}}"],
+              "path": ["files"]
+            }
+          }
+        },
+        {
+          "name": "Upload File atas nama Mahasiswa (Integrasi Sistem Akademik)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "external_id",
+                  "value": "NIM20241001",
+                  "type": "text",
+                  "description": "NIM / NIP mahasiswa atau dosen di Sistem Akademik"
+                },
+                {
+                  "key": "user_name",
+                  "value": "Ahmad Mahasiswa",
+                  "type": "text",
+                  "description": "Nama mahasiswa jika belum terdaftar (auto-provision)"
+                },
+                {
+                  "key": "user_email",
+                  "value": "ahmad@kampus.ac.id",
+                  "type": "text",
+                  "description": "Email mahasiswa jika belum terdaftar"
+                },
+                {
+                  "key": "folder_id",
+                  "value": "",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/files",
+              "host": ["{{base_url}}"],
+              "path": ["files"]
+            }
+          }
+        },
+        {
+          "name": "Get File Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/files/1",
+              "host": ["{{base_url}}"],
+              "path": ["files", "1"]
+            }
+          }
+        },
+        {
+          "name": "Rename File",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"berkas_skripsi_final_rev2.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/files/1",
+              "host": ["{{base_url}}"],
+              "path": ["files", "1"]
+            }
+          }
+        },
+        {
+          "name": "Move File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/files/1/move",
+              "host": ["{{base_url}}"],
+              "path": ["files", "1", "move"]
+            }
+          }
+        },
+        {
+          "name": "Download File Stream",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/files/1/download",
+              "host": ["{{base_url}}"],
+              "path": ["files", "1", "download"]
+            }
+          }
+        },
+        {
+          "name": "Delete File (Pindah ke Trash)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/files/1",
+              "host": ["{{base_url}}"],
+              "path": ["files", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Shares & Kolaborasi",
+      "item": [
+        {
+          "name": "List User Shares",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/shares",
+              "host": ["{{base_url}}"],
+              "path": ["shares"]
+            }
+          }
+        },
+        {
+          "name": "Create Public Share Link",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shareable_type\": \"file\",\n  \"shareable_id\": 1,\n  \"permission\": \"download\",\n  \"expires_in_days\": 7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shares",
+              "host": ["{{base_url}}"],
+              "path": ["shares"]
+            }
+          }
+        },
+        {
+          "name": "Create Private Share (Ke Pengguna Lain)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shareable_type\": \"folder\",\n  \"shareable_id\": 1,\n  \"permission\": \"view\",\n  \"email\": \"dosen.pembimbing@kampus.ac.id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/shares",
+              "host": ["{{base_url}}"],
+              "path": ["shares"]
+            }
+          }
+        },
+        {
+          "name": "Revoke / Delete Share",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/shares/1",
+              "host": ["{{base_url}}"],
+              "path": ["shares", "1"]
+            }
+          }
+        },
+        {
+          "name": "Public Access Share Info (Tanpa Auth)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/public/shares/YOUR_64_CHAR_TOKEN",
+              "host": ["{{base_url}}"],
+              "path": ["public", "shares", "YOUR_64_CHAR_TOKEN"]
+            }
+          }
+        },
+        {
+          "name": "Public Download via Share Token (Tanpa Auth)",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/public/shares/YOUR_64_CHAR_TOKEN/download",
+              "host": ["{{base_url}}"],
+              "path": ["public", "shares", "YOUR_64_CHAR_TOKEN", "download"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Kuota Penyimpanan",
+      "item": [
+        {
+          "name": "Get User Quota Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quota",
+              "host": ["{{base_url}}"],
+              "path": ["quota"]
+            }
+          }
+        },
+        {
+          "name": "Recalculate User Quota",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/quota/recalculate",
+              "host": ["{{base_url}}"],
+              "path": ["quota", "recalculate"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Admin Panel (Role admin-kampus / super-admin)",
+      "item": [
+        {
+          "name": "Get System Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/stats",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "stats"]
+            }
+          }
+        },
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users?account_type=&search=",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users"],
+              "query": [
+                {
+                  "key": "account_type",
+                  "value": "academic",
+                  "description": "Filter by academic atau public"
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Suspend / Unsuspend User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/suspend",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "1", "suspend"]
+            }
+          }
+        },
+        {
+          "name": "Override User Quota",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quota_bytes\": 10737418240\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/users/1/quota",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "users", "1", "quota"]
+            }
+          }
+        },
+        {
+          "name": "View System Activity Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/logs?action=&user_id=",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "logs"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

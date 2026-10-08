@@ -26,6 +26,10 @@ class UploadFileRequest extends FormRequest
         return [
             'file' => ['required', 'file', "max:{$maxKb}"],
             'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
+            'external_id' => ['nullable', 'string', 'max:255'],
+            'user_name' => ['nullable', 'string', 'max:255'],
+            'user_email' => ['nullable', 'email', 'max:255'],
         ];
     }
 

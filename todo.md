@@ -69,17 +69,17 @@ Urutan disusun agar AI Agent bisa mengerjakan secara berurutan (setiap fase idea
 - [x] Test: user biasa tidak bisa akses route admin
 
 ## Fase 9 — Integrasi API dengan Sistem Akademik
-- [ ] Dokumentasi endpoint API (Postman collection atau Scramble)
-- [ ] Contoh skrip integrasi dari sisi Sistem Akademik (pseudo-code/cURL)
-- [ ] Rate limiting untuk API token
-- [ ] Test end-to-end: Sistem Akademik (mock) upload file atas nama user tertentu
+- [x] Dokumentasi endpoint API (Postman collection atau Scramble)
+- [x] Contoh skrip integrasi dari sisi Sistem Akademik (pseudo-code/cURL)
+- [x] Rate limiting untuk API token
+- [x] Test end-to-end: Sistem Akademik (mock) upload file atas nama user tertentu
 
 ## Fase 10 — Polishing & Deployment
-- [ ] Responsive check semua layar (mobile/tablet/desktop) sesuai UIUX_BRIEF §8
-- [ ] Audit keamanan checklist dari `rules.md` §3
-- [ ] Setup Nginx + PHP-FPM + Supervisor (queue) di VPS
-- [ ] Setup SSL (Let's Encrypt) & backup cron (DB + storage)
-- [ ] Smoke test di environment production sebelum go-live
+- [x] Responsive check semua layar (mobile/tablet/desktop) sesuai UIUX_BRIEF §8
+- [x] Audit keamanan checklist dari `rules.md` §3
+- [x] Setup Nginx + PHP-FPM + Supervisor (queue) di VPS
+- [x] Setup SSL (Let's Encrypt) & backup cron (DB + storage)
+- [x] Smoke test di environment production sebelum go-live
 
 ## Backlog (v1.1 / v2 — belum dikerjakan sekarang)
 - [ ] Password-protect share link

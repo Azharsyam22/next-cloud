@@ -70,5 +70,8 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
         <livewire:my-shared-links />
     </main>
+
+    <!-- Mobile Bottom Navigation (UIUX_BRIEF §8) -->
+    <x-mobile-nav />
 </body>
 </html>
